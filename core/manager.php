@@ -294,12 +294,17 @@ class manager
 	 */
 	public function get_submitted_prefixes()
 	{
-		// Due to .sortable('serialize') $ids will be a string like: 'prefix[]=4'
-		// I need the number. That's in index two of $prefix_ids
-		$used_ids = $this->request->variable('prefixes_used', '');
-		if ($used_ids && preg_match_all('/(prefix\[\]=(\d+)&?)+/', $used_ids, $prefix_ids) && isset($prefix_ids[2]))
-		{
-			$used_ids = $prefix_ids[2];
+		$used_ids = $this->request->variable('prefixes_used_arr', array(0)); // this is correct
+
+		if (empty($used_ids)) {
+			// Due to .sortable('serialize') $ids will be a string like: 'prefix[]=4'
+			// I need the number. That's in index two of $prefix_ids
+			$used_ids = $this->request->variable('prefixes_used', '');
+
+			if ($used_ids && preg_match_all('/(prefix\[\]=(\d+)&?)+/', $used_ids, $prefix_ids) && isset($prefix_ids[2]))
+			{
+				$used_ids = $prefix_ids[2];
+			}
 		}
 
 		return is_array($used_ids) ? $used_ids : [];

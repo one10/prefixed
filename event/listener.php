@@ -195,7 +195,21 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		$this->manager->set_topic_prefixes((int) $event['data']['topic_id'], $this->manager->get_submitted_prefixes(), (int) $event['data']['forum_id']);
+		$submitted_prefixes = $this->manager->get_submitted_prefixes();
+
+		// TODO(one10): these should come from the prefix extension's per-forum setting
+		$MIN_PREFIX_LIMIT = 1;
+		$MAX_PREFIX_LIMIT = 10;
+
+		$num_prefixes = count($submitted_prefixes);
+		if ($num_prefixes < $MIN_PREFIX_LIMIT) {
+			throw new \imkingdavid\prefixed\core\token\exception($this->user->lang('Too few prefixes, need at least ' . $MIN_PREFIX_LIMIT));
+		}
+		if ($num_prefixes > $MAX_PREFIX_LIMIT) {
+			throw new \imkingdavid\prefixed\core\token\exception($this->user->lang('Too many prefixes, need at most ' . $MAX_PREFIX_LIMIT));
+		}
+
+		$this->manager->set_topic_prefixes((int) $event['data']['topic_id'], $submitted_prefixes, (int) $event['data']['forum_id']);
 	}
 
 	/**

@@ -32,4 +32,24 @@ $(document).ready(function() {
 		$('#prefix_dropdown_toggle i.fa-arrow-down').toggle();
 		$('#prefix_dropdown_toggle i.fa-arrow-up').toggle();
 	});
+
+	// TODO(one10): these should come from the prefix extension's per-forum setting
+	const MIN_PREFIX_LIMIT = 1;
+	const MAX_PREFIX_LIMIT = 10;
+
+	$("#prefixes_used_arr").change(function () {
+		if($("#prefixes_used_arr").find("option:selected").length > MAX_PREFIX_LIMIT) {
+			alert("Too many prefixes selected, only the first " + MAX_PREFIX_LIMIT + " will be used.");
+		}
+	});
+
+	$('#postform').on('submit', function(e){
+		// e.preventDefault();
+		// this.submit();
+		if($("#prefixes_used_arr").find("option:selected").length < MIN_PREFIX_LIMIT) {
+			const PLURAL = (MIN_PREFIX_LIMIT === 1) ? "prefix" : "prefixes";
+			alert("Please select at least " + MIN_PREFIX_LIMIT + " " + PLURAL + ".");
+			return false;
+		}
+	});
 });
